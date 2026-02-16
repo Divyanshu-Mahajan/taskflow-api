@@ -1,12 +1,16 @@
 const mongoose = require("mongoose");
-const DB_NAME = process.env.DB_NAME;
 
 const connectDB = async () => {
     try {
-        const connectionInstance = await mongoose.connect(
-            `${process.env.MONGO_URI}/${DB_NAME}`);
+        const { MONGO_URI, DB_NAME } = process.env;
 
-        console.log(`\n ${connectionInstance}`);
+        if (!MONGO_URI || !DB_NAME) {
+            throw new Error("Database environment variables are missing");
+        }
+
+        const connectionInstance = await mongoose.connect(
+            `${process.env.MONGO_URI}/${process.env.DB_NAME}`);
+
         console.log(`\n MongoDB connected !! DB host ${connectionInstance.connection.host}`)
     } catch (error) {
         console.log("MongoDB connection error", error);
